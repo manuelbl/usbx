@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,8 @@ version = "0.8.0"
 authors = [
   { name="Manuel Bl.", email="manuel.bleichenbacher@gmail.com" },
 ]
-description = "Query and communicate with USB devices"
+license = { file = "LICENSE" }
+description = "Modern and user-friendly library for working with USB devices"
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
@@ -16,6 +17,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+keywords = [ "usb", "usb-host", "usb-devices" ]
 
 [project.urls]
 Homepage = "https://github.com/manuelbl/usbx"
