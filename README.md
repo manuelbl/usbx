@@ -1,6 +1,7 @@
-
 <h1 align="center">
-![usbx](https://raw.githubusercontent.com/manuelbl/usbx/main/docs/_static/usbx-github.svg)
+
+![usbx](https://github.com/manuelbl/usbx/raw/main/docs/_static/usbx-github.svg)
+
 </h1>
 
 
