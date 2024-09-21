@@ -1,0 +1,4 @@
+-r ../dev-requirements.txt
+sphinx>=7.4.7
+furo
+sphinxext-opengraph

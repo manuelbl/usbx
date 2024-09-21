@@ -1,0 +1,6 @@
+__pycache__/
+.idea/
+.venv/
+src/usbx.egg-info
+dist/
+docs/_build/

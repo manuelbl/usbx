@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "usbx"
+version = "0.8.0"
+authors = [
+  { name="Manuel Bl.", email="manuel.bleichenbacher@gmail.com" },
+]
+description = "Query and communicate with USB devices"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/manuelbl/usbx"
+Issues = "https://github.com/manuelbl/usbx/issues"
+
+[tool.setuptools.package-data]
+usbx = ["py.typed"]
