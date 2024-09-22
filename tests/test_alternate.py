@@ -3,11 +3,10 @@
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
 
-from concurrent.futures import ThreadPoolExecutor
 from random import randbytes
 
 from tests.base import TestBase
-from usbx import TransferDirection, USBError
+from usbx import USBError
 
 
 class TestAlternate(TestBase):

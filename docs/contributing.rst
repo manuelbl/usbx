@@ -14,6 +14,7 @@ install this package in editable mode:
 .. code-block:: shell
 
     git clone https://github.com/manuelbl/usbx.git
+    cd usbx
     python3 -m venv .venv
     source .venv/bin/activate
     python -m pip install --upgrade pip

@@ -3,6 +3,9 @@
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
 
+import sys
+sys.path.append(".")
+
 import time
 from random import Random
 from threading import Thread, current_thread
