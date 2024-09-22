@@ -16,7 +16,7 @@ install this package in editable mode:
     git clone https://github.com/manuelbl/usbx.git
     python3 -m venv .venv
     source .venv/bin/activate
-    pip install --upgrade pip
+    python -m pip install --upgrade pip
     pip install --editable .
 
 
