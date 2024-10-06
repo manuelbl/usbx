@@ -355,4 +355,4 @@ class WindowsDevice(DeviceBase):
             if intf_handle.winusb_handle is not None:
                 return intf_handle.winusb_handle
 
-        raise USBError('control transfer to device not possible as not interface has been claimed')
+        raise USBError('control transfer to device not possible as no interface has been claimed')
