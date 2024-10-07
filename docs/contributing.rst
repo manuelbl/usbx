@@ -2,7 +2,7 @@ Contributing
 ============
 
 *usbx* is an open-source project that happily accepts contributions,
-usually in the form of GitHub push requests.
+usually in the form of GitHub pull requests.
 
 
 Setting up your development environment
@@ -27,7 +27,7 @@ Running unit tests
 In order to run the unit tests, a test device must be connected. They can be built from inexpensive
 microcontroller development boards (BluePill, BlackPill) and are shared with the
 `Java Does USB project <https://github.com/manuelbl/JavaDoesUSB>`_.
-Instructions how to build them can be found on GitHub:
+Instructions on how to build them can be found on GitHub:
 
 - `Loopback device <https://github.com/manuelbl/JavaDoesUSB/tree/main/test-devices/loopback-stm32#binary-releases>`_
 - `Composite device <https://github.com/manuelbl/JavaDoesUSB/tree/main/test-devices/composite-stm32#binary-releases>`_
