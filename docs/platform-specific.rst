@@ -5,7 +5,7 @@ macOS
 -----
 
 No special considerations apply. Using this library, a Python application can connect to any USB device
-and claim any interfaces that isn't claimed by an operating system driver or another application.
+and claim any interface that isn't claimed by an operating system driver or another application.
 Standard operation system drivers can be unloaded if the application is run with root privileges.
 
 This library runs both on Macs with Apple Silicon and Intel processors.
@@ -35,7 +35,7 @@ create a file called ``/etc/udev/rules.d/80-usbx-udev.rules`` with the below con
 
     SUBSYSTEM=="usb", ATTRS{idVendor}=="cafe", MODE="0666"
 
-Then disconnected and reconnect the USB device.
+Then disconnect and reconnect the USB device.
 The above files adds a rule to assign permission mode 0666 to all USB devices
 with vendor ID `0xCAFE`. This unregistered vendor ID is used by the test devices.
 Similar rules can be configured for other vendor or product IDs, or for all USB

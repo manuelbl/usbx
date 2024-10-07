@@ -36,8 +36,8 @@ Enumerating USB devices
 Querying information about devices
 ----------------------------------
 
-For each USB device, descriptive information and details the interfaces and endpoints is available
-through properties and methods of the :class:`~Device` class:
+For each USB device, descriptive information and details about the interfaces and endpoints are available
+through the properties and methods of the :class:`~Device` class:
 
 .. code-block:: python
 
@@ -97,7 +97,7 @@ lambda expression.
 Notifications about connected and disconnected devices
 ------------------------------------------------------
 
-To notified when USB device is plugged in or removed from the computer,
+To be notified when USB device is plugged in or removed from the computer,
 callback functions can registered. The functions receive the :class:`~Device` instance
 as the only parameter:
 
@@ -155,7 +155,7 @@ Using control requests
 
 To send a control request, the device is opened first. :meth:`~Device.control_transfer_out` takes
 a :class:`~ControlTransfer` instance as its first argument, consisting of request type, recipient, value,
-index and data. The purpose of these values depends on the USB device, and a device-specific documentation
+index and data. The purpose of these values depends on the USB device, and device-specific documentation
 is usually provided by the device manufacturer. For devices implementing an official USB class,
 it is documented in the USB class specification.
 
@@ -176,7 +176,7 @@ Note that the :class:`~ControlTransfer` instance uses separate fields for reques
 while they are combined in ``bmRequestType`` field in the USB specification.
 
 Control requests are always initiated from the host computer, and the host always waits for
-an answer from the device. For *transfer outs*, the response is just an acknowledge from
+an answer from the device. For *transfer outs*, the response is just an acknowledgement from
 the device, typically indicating that the device has executed the command.
 
 For *transfer ins* – executed with :meth:`~Device.control_transfer_in`, the response
@@ -248,7 +248,7 @@ Sending data to bulk endpoints
 
 Bulk endpoints can transmit large amounts of data from and to devices.
 They implement a *stream* concept. The chunks of data submitted for
-transmission do not directly translate the the transmitted packets as the
+transmission do not directly translate to the transmitted packets as the
 operating system can and will join the chunks and divide the resulting
 stream into packets as it sees fit.
 
