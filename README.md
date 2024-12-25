@@ -53,7 +53,7 @@ Serveral examples demonstrate the use of the library:
 - [enumerate.py](examples/enumerate.py): Enumerate all connected devices including details about the interfaces and endpoints
 - [monitor.py](examples/monitor.py): Monitor USB devices being connected and disconnected
 - [epaper.py](examples/epaper.py): Display an image on e-paper display with (with IT8951 controller)
-- [stm32dfu](stm32dfu): Upload firmware to an STM32 based device
+- [stm32dfu](examples/stm32dfu): Upload firmware to an STM32 based device
 
 
 ## License
