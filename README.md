@@ -44,9 +44,16 @@ The [User Guide](https://usbx.readthedocs.io/en/stable/user-guide.html) will get
 Also read [Platform-specific Considerations](https://usbx.readthedocs.io/en/stable/platform-specific.html)
 as some operating systems might need extra steps to work with USB devices.
 
-
-
 The [API Reference](https://usbx.readthedocs.io/en/stable/reference/index.html) documentation provides API-level documentation.
+
+### Examples
+
+Serveral examples demonstrate the use of the library:
+
+- [enumerate.py](examples/enumerate.py): Enumerate all connected devices including details about the interfaces and endpoints
+- [monitor.py](examples/monitor.py): Monitor USB devices being connected and disconnected
+- [epaper.py](examples/epaper.py): Display an image on e-paper display with (with IT8951 controller)
+- [stm32dfu](stm32dfu): Upload firmware to an STM32 based device
 
 
 ## License
