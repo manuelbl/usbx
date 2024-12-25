@@ -73,8 +73,20 @@ class DFUDevice:
 
         descriptor = device.configuration_descriptor
         offset = DFUDevice.get_dfu_descriptor_offset(descriptor)
+
+        self.detach_timeout: float = struct.unpack_from('<h', descriptor, offset=offset+3)[0] / 1000
+        """
+        Time, in seconds, that the device waits after receipt of the DFU_DETACH request. If this time
+        elapses without a USB reset, then the device terminates the Reconfiguration phase and reverts to
+        normal operation. This represents the maximum time that the device can wait (depending on its timers,
+        etc.). The host may specify a shorter timeout in the DFU_DETACH request.
+        """
+
         self.transfer_size: int = struct.unpack_from('<h', descriptor, offset=offset+5)[0]
-        """Transfer size"""
+        """
+        Maximum number of bytes that the device can accept per control-write transaction: wTransferSize depends
+        on the firmware implementation on each MCU.
+        """
 
         self.dfu_version: Version = Version(struct.unpack_from('<h', descriptor, offset=offset+7)[0])
         """DFU protocol version"""
@@ -82,12 +94,38 @@ class DFUDevice:
         self.segments: list[Segment] = []
         """List of segments (available after opening the device)"""
 
+        self.attributes = descriptor[offset+2]
+        """DFU attributes"""
+
     @property
     def serial_number(self) -> str:
         """
         Device serial number
         """
         return self.device.serial
+    
+    @property
+    def can_download(self) -> bool:
+        return (self.attributes & 1) != 0
+
+    @property
+    def can_upload(self) -> bool:
+        return (self.attributes & 2) != 0
+
+    @property
+    def is_manifestation_toleration(self) -> bool:
+        """
+        Device is able to communicate via USB after Manifestation phase 
+        """
+        return (self.attributes & 4) != 0
+
+    @property
+    def will_detach(self) -> bool:
+        """
+        Device will perform a bus detach-attach sequence when it receives a
+        DFU_DETACH request.
+        """
+        return (self.attributes & 8) != 0
 
     def open(self) -> None:
         """
@@ -109,7 +147,10 @@ class DFUDevice:
         Gets the full device status.
         """
         transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.GET_STATUS, 0, self.interface_number)
-        return DFUStatus.from_bytes(self.device.control_transfer_in(transfer, 6))
+        status_bytes = self.device.control_transfer_in(transfer, 6)
+        if len(status_bytes) != 6:
+            raise DFUError("Invalid response for GET_STATUS request")
+        return DFUStatus.from_bytes(status_bytes)
     
     def clear_status(self) -> None:
         """
@@ -161,6 +202,14 @@ class DFUDevice:
         transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.UPLOAD, block_num, self.interface_number)
         self.device.control_transfer_in(transfer, 0)
 
+        try:
+            status = self.get_status()
+        except DFUError:
+            # On Windows, the GET_STATUS request can return an empty response (here and only here)
+            status = self.get_status()
+        if status.state != DeviceState.DFU_IDLE:
+            raise DFUError("Unexpected state after exiting from upload mode")
+        
         return result
     
     def verify(self, firmware: bytes) -> None:
@@ -214,9 +263,9 @@ class DFUDevice:
         """
         Erases the specified range.
 
-        Only applicable to erasable sector, i.e. flash memory.
+        Only applicable to erasable sectors, i.e. flash memory.
 
-        Only entire pages can be erased. If start and end address to not fall onto
+        Only entire pages can be erased. If start and end address do not fall onto
         page boundaries, this method will extend the range to be erased.
         """
         
@@ -234,7 +283,7 @@ class DFUDevice:
             start_address = page.end_address
 
     def erase_page(self, address: int) -> None:
-        self.exec_download_command_with_address(0x41, "erasing page", address)
+        self.exec_special_command(0x41, "erasing page", address)
 
     def get_writable_page(self, address: int) -> Page:
         page = self.find_page(address)
@@ -248,9 +297,9 @@ class DFUDevice:
         return Segment.find_page(self.segments, address)
 
     def set_address(self, address: int) -> None:
-        self.exec_download_command_with_address(0x21, "setting address", address)
+        self.exec_special_command(0x21, "setting address", address)
 
-    def exec_download_command_with_address(self, command_byte: int, action: str, address: int) -> None:
+    def exec_special_command(self, command_byte: int, action: str, address: int) -> None:
         transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.DOWNLOAD, 0, self.interface_number)
         data = bytes([command_byte]) + struct.pack('<I', address)
         self.device.control_transfer_out(transfer, data)
@@ -281,7 +330,7 @@ class DFUDevice:
     def start_application(self) -> None:
         self.expect_state(DeviceState.DFU_IDLE, DeviceState.DFU_DNLOAD_IDLE)
 
-        transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.DOWNLOAD, 2, self.interface_number)
+        transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.DOWNLOAD, 0, self.interface_number)
         self.device.control_transfer_out(transfer)
 
         status = self.get_status()

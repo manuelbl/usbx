@@ -92,8 +92,8 @@ class Segment:
                     return Page(segment, sector.start_address + page_number * sector.page_size, 1, sector.page_size, sector.attributes)
         return None
     
-    segment_pattern = re.compile("@([^/]+)/0x([0-9A-Fa-f]+)/")
-    sector_pattern = re.compile(",?(\d+)\*(\d+) ?([BKM]?)(.)")
+    segment_pattern = re.compile(r"@([^/]+)/0x([0-9A-Fa-f]+)/")
+    sector_pattern = re.compile(r",?(\d+)\*(\d+) ?([BKM]?)(.)")
 
 
 @dataclass
