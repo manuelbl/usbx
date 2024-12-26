@@ -23,28 +23,28 @@ except OSError:
 # check for single DFU device
 devices = DFUDevice.find_devices()
 if len(devices) == 0:
-    sys.stderr.write("Error: No STM32 DFU device connected (or not in DFU mode)")
+    sys.stderr.write("Error: No STM32 DFU device connected (or not in DFU mode)\n")
     sys.exit(4)
 if len(devices) > 1:
-    sys.stderr.write("Error: Multiple STM32 DFU devices connected. Please connect only one.")
+    sys.stderr.write("Error: Multiple STM32 DFU devices connected. Please connect only one.\n")
     sys.exit(4)
 
 device = devices[0]
 print(f"DFU device found with serial {device.serial_number}")
 
-# download and verify firmware
 try:
+    # download and verify firmware
     device.open()
     device.download(firmware)
     device.verify(firmware)
     print("Firmware successfully downloaded and verified")
 
+    # leave DFU mode
     device.start_application()
+    device.close()
     device.wait_for_disconnect()
     print("DFU mode ended and firmware started")
 
-    device.close()
-
 except DFUError as e:
-    sys.stderr.write(f"Error: {e}")
+    sys.stderr.write(f"Error: {e}\n")
     sys.exit(3)
