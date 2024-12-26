@@ -40,7 +40,8 @@ try:
     print("Firmware successfully downloaded and verified")
 
     device.start_application()
-    print("DFU mode exited and firmware started")
+    device.wait_for_disconnect()
+    print("DFU mode ended and firmware started")
 
     device.close()
 

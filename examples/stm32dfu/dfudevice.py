@@ -146,7 +146,7 @@ class DFUDevice:
         """
         Gets the full device status.
         """
-        transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.GET_STATUS, 0, self.interface_number)
+        transfer = self.create_dfu_control_transfer(DFURequest.GET_STATUS)
         status_bytes = self.device.control_transfer_in(transfer, 6)
         if len(status_bytes) != 6:
             raise DFUError("Invalid response for GET_STATUS request")
@@ -156,7 +156,7 @@ class DFUDevice:
         """
         Clears an error status.
         """
-        transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.CLEAR_STATUS, 0, self.interface_number)
+        transfer = self.create_dfu_control_transfer(DFURequest.CLEAR_STATUS)
         self.device.control_transfer_out(transfer)
 
     def clear_error_if_needed(self) -> None:
@@ -172,7 +172,7 @@ class DFUDevice:
         """
         Aborts download mode.
         """
-        transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.ABORT, 0, self.interface_number)
+        transfer = self.create_dfu_control_transfer(DFURequest.ABORT)
         self.device.control_transfer_out(transfer)
 
     def read(self, address: int, length: int) -> bytes:
@@ -182,7 +182,7 @@ class DFUDevice:
 
         self.expect_state(DeviceState.DFU_IDLE, DeviceState.DFU_DNLOAD_IDLE)
         self.set_address(address)
-        self.exit_download_mode()
+        self.exit_mode()
         self.expect_state(DeviceState.DFU_IDLE, DeviceState.DFU_UPLOAD_IDLE)
 
         result = bytearray()
@@ -192,23 +192,13 @@ class DFUDevice:
         block_num = 2
         while offset < length:
             chunk_size = min(self.transfer_size, length - offset)
-            transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.UPLOAD, block_num, self.interface_number)
+            transfer = self.create_dfu_control_transfer(DFURequest.UPLOAD, block_num)
             chunk = self.device.control_transfer_in(transfer, chunk_size)
             result += chunk
             offset += chunk_size
             block_num += 1
 
-        # request zero length chunk to exit out of upload mode
-        transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.UPLOAD, block_num, self.interface_number)
-        self.device.control_transfer_in(transfer, 0)
-
-        try:
-            status = self.get_status()
-        except DFUError:
-            # On Windows, the GET_STATUS request can return an empty response (here and only here)
-            status = self.get_status()
-        if status.state != DeviceState.DFU_IDLE:
-            raise DFUError("Unexpected state after exiting from upload mode")
+        self.exit_mode()
         
         return result
     
@@ -249,7 +239,7 @@ class DFUDevice:
             chunk = firmware[offset:offset+chunk_size]
 
             print(f"Writing data at 0x{(start_address + offset):08x} (size 0x{chunk_size:x})")
-            transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.DOWNLOAD, transaction, self.interface_number)
+            transfer = self.create_dfu_control_transfer(DFURequest.DOWNLOAD, transaction)
             self.device.control_transfer_out(transfer, chunk)
 
             self.finish_download_command("writing data")
@@ -257,7 +247,7 @@ class DFUDevice:
             offset += chunk_size
             transaction += 1
 
-        self.exit_download_mode()
+        self.exit_mode()
 
     def erase(self, start_address: int, length: int) -> None:
         """
@@ -282,6 +272,23 @@ class DFUDevice:
             self.erase_page(page.start_address)
             start_address = page.end_address
 
+    def wait_for_disconnect(self) -> None:
+        """
+        Waits until the device disconnects.
+        
+        Disconnection is a side effect of leaving DFU mode.
+
+        If the device does not disconnect after 5 seconds,
+        an exception will be thrown.
+        """
+        waiting_time = 5
+        while waiting_time > 0 and self.device.is_connected:
+            time.sleep(0.1)
+            waiting_time -= 0.1
+
+        if self.device.is_connected:
+            raise DFUError("Device did not restart (try disconnecting and reconnecting it)")
+
     def erase_page(self, address: int) -> None:
         self.exec_special_command(0x41, "erasing page", address)
 
@@ -300,7 +307,7 @@ class DFUDevice:
         self.exec_special_command(0x21, "setting address", address)
 
     def exec_special_command(self, command_byte: int, action: str, address: int) -> None:
-        transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.DOWNLOAD, 0, self.interface_number)
+        transfer = self.create_dfu_control_transfer(DFURequest.DOWNLOAD)
         data = bytes([command_byte]) + struct.pack('<I', address)
         self.device.control_transfer_out(transfer, data)
         self.finish_download_command(action)
@@ -318,7 +325,7 @@ class DFUDevice:
         
         time.sleep(status.poll_timeout)
 
-    def exit_download_mode(self) -> None:
+    def exit_mode(self) -> None:
         self.abort()
 
         status = self.get_status()
@@ -330,7 +337,9 @@ class DFUDevice:
     def start_application(self) -> None:
         self.expect_state(DeviceState.DFU_IDLE, DeviceState.DFU_DNLOAD_IDLE)
 
-        transfer = ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, DFURequest.DOWNLOAD, 0, self.interface_number)
+        # By sending a zero-length download packet and querying the status,
+        # the device will leave DFU mode and restart.
+        transfer = self.create_dfu_control_transfer(DFURequest.DOWNLOAD)
         self.device.control_transfer_out(transfer)
 
         status = self.get_status()
@@ -341,3 +350,6 @@ class DFUDevice:
         status = self.get_status()
         if status.state != state1 and status.state != state2:
             raise DFUError(f"Expected state {state1} or {state2} but got {status.state}")
+        
+    def create_dfu_control_transfer(self, request: DFURequest, value: int = 0) -> ControlTransfer:
+        return ControlTransfer(RequestType.CLASS, Recipient.INTERFACE, request, value, self.interface_number)
