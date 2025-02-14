@@ -70,6 +70,6 @@ Please see [Contributing](https://usbx.readthedocs.io/en/stable/contributing.htm
 ## System Requirements
 
 - Python 3.9 or higher
-- 64-bit application
 - Windows (x86-64 or ARM), Linux (x86-64 or ARM), macOS (x86-64 or ARM)
+- 64-bit platform and Python interpreter
 - For Linux: *udev* (usually goes together with *systemd*)
