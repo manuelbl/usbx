@@ -2,7 +2,7 @@
 # Copyright (c) 2024 Manuel Bleichenbacher
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
-
+import logging
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from typing import Callable
@@ -12,6 +12,10 @@ from usbx import usb, Device, ControlTransfer, RequestType, Recipient, TransferT
 
 
 class TestBase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        logging.basicConfig(level=logging.INFO)
 
     def setUp(self):
         self.test_device: Device = usb.find_device(lambda device: get_config(device) is not None)
