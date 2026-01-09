@@ -165,6 +165,8 @@ class WindowsDeviceRegistry(DeviceRegistryBase):
         try:
             langs = self.get_descriptor(hub_handle, usb_port_num, 3, 0, 0)
             num_langs = (len(langs) - 2) // 2
+            if num_langs < 0:
+                return [0x0409]
             return struct.unpack(f'<{num_langs}H', langs[2:])
         except WindowsError:
             return [0x0409]
