@@ -7,6 +7,7 @@ import logging
 import struct
 from ctypes import byref, sizeof, resize, cast, wstring_at
 from ctypes.wintypes import HANDLE, DWORD, ULONG, HWND, UINT, WPARAM, LPARAM, MSG, LPCWSTR
+from time import monotonic
 from typing import Optional
 
 from .deviceinfoset import DeviceInfoSet
@@ -155,10 +156,20 @@ class WindowsDeviceRegistry(DeviceRegistryBase):
         device = WindowsDevice(device_path, is_composite, bytes(device_desc), config_desc)
         device.vid = device_desc.idVendor
         device.pid = device_desc.idProduct
+
+        # Record how long it takes to get the descriptors
+        start = monotonic()
         languages = self.get_languages(hub_handle, usb_port_num)
         device.manufacturer = self.get_string_descriptor(hub_handle, usb_port_num, device_desc.iManufacturer, languages)
         device.product = self.get_string_descriptor(hub_handle, usb_port_num, device_desc.iProduct, languages)
         device.serial = self.get_string_descriptor(hub_handle, usb_port_num, device_desc.iSerialNumber, languages)
+
+        # If it takes longer than one second to get the descriptors, log a warning
+        # This can mean the device is in a bad state that can sometimes be fixed by unplugging it and plugging it back in
+        delta = monotonic() - start
+        if delta > 1.0:
+            logging.warning(f'Getting string descriptors for device {device_path} took {delta:.3f} seconds (vid=0x{device.vid:04X}, pid=0x{device.pid:04X}, manufacturer={device.manufacturer}, product={device.product}, serial={device.serial})')
+
         return device
 
     def get_languages(self, hub_handle: HANDLE, usb_port_num: int) -> [int]:
