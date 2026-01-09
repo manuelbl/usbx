@@ -18,7 +18,7 @@ from .user32 import user32, WNDCLASSEXW, DEV_BROADCAST_DEVICEINTERFACE_W, WNDPRO
     DBT_DEVICEARRIVAL
 from .windevice import WindowsDevice
 from .winerror import raise_last_error
-from .winusb import USB_CONNECTION_STATUS, USB_NODE_CONNECTION_INFORMATION_EX, IOCTL_USB_GET_NODE_CONNECTION_INFORMATION_EX, SetupPacket, \
+from .winusb import USB_NODE_CONNECTION_INFORMATION_EX, IOCTL_USB_GET_NODE_CONNECTION_INFORMATION_EX, SetupPacket, \
     USB_DESCRIPTOR_REQUEST, IOCTL_USB_GET_DESCRIPTOR_FROM_NODE_CONNECTION
 from .._common.registrybase import DeviceRegistryBase
 from ..device import Device
@@ -155,15 +155,10 @@ class WindowsDeviceRegistry(DeviceRegistryBase):
         device = WindowsDevice(device_path, is_composite, bytes(device_desc), config_desc)
         device.vid = device_desc.idVendor
         device.pid = device_desc.idProduct
-
-        # If the device is not connected, skip attempting to read any descriptors since they take a long time and ultimately fail
-        # Perhaps this should be skipped for any status other than DEVICE_CONNECTED?
-        conn_status = USB_CONNECTION_STATUS(conn_info.ConnectionStatus)
-        if conn_status != USB_CONNECTION_STATUS.NO_DEVICE_CONNECTED:
-            languages = self.get_languages(hub_handle, usb_port_num)
-            device.manufacturer = self.get_string_descriptor(hub_handle, usb_port_num, device_desc.iManufacturer, languages)
-            device.product = self.get_string_descriptor(hub_handle, usb_port_num, device_desc.iProduct, languages)
-            device.serial = self.get_string_descriptor(hub_handle, usb_port_num, device_desc.iSerialNumber, languages)
+        languages = self.get_languages(hub_handle, usb_port_num)
+        device.manufacturer = self.get_string_descriptor(hub_handle, usb_port_num, device_desc.iManufacturer, languages)
+        device.product = self.get_string_descriptor(hub_handle, usb_port_num, device_desc.iProduct, languages)
+        device.serial = self.get_string_descriptor(hub_handle, usb_port_num, device_desc.iSerialNumber, languages)
         return device
 
     def get_languages(self, hub_handle: HANDLE, usb_port_num: int) -> [int]:
