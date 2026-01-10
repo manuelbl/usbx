@@ -72,7 +72,7 @@ class WindowsDeviceRegistry(DeviceRegistryBase):
     def handle_windows_message(self, hwnd: HWND, umsg: UINT, wparam: WPARAM, lparam: LPARAM) -> int:
         # check for message related to connecting / disconnecting devices
         if umsg == WM_DEVICECHANGE and (wparam == DBT_DEVICEARRIVAL or wparam == DBT_DEVICEREMOVECOMPLETE):
-            device_path = wstring_at(cast(lparam.value + DEV_BROADCAST_DEVICEINTERFACE_W.dbcc_name.offset, LPCWSTR))
+            device_path = wstring_at(cast(lparam + DEV_BROADCAST_DEVICEINTERFACE_W.dbcc_name.offset, LPCWSTR))
             if wparam == DBT_DEVICEARRIVAL:
                 self.on_device_connected(device_path)
             else:
