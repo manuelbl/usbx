@@ -251,8 +251,8 @@ def create_uuid(uuid_bytes: list[int]) -> CFTypeRef:
 
 
 kIOUSBDeviceClassName: bytes = b'IOUSBDevice'
-kIOFirstMatchNotification: bytes = b'IOServiceFirstMatch'
-kIOTerminatedNotification: bytes = b'IOServiceTerminate'
+kIOFirstMatchNotification: c_char_p = c_char_p(b'IOServiceFirstMatch')
+kIOTerminatedNotification: c_char_p = c_char_p(b'IOServiceTerminate')
 kIOUSBFindInterfaceDontCare: int = 0xffff
 kIOUSBPipeStalled: int = 0xE000404F
 kIOUSBTransactionTimeout: int = 0xE0004051
@@ -350,9 +350,9 @@ class IOKitGuard(object):
 
     Instance of this class can retain a reference to a single object.
 
-    Use ``guard_iokit_object()`` to create instance of this class.
+    Use ``guard_iokit_object()`` to create an instance of this class.
     """
-    def __init__(self, handle: Optional[object] = None):
+    def __init__(self, handle: Optional[type[IUnknownHandle]] = None):
         self.handle: Optional[IUnknownHandle] = None
         if handle is not None:
             self.handle = cast(handle, IUnknownHandle)
@@ -367,7 +367,7 @@ class IOKitGuard(object):
             self.handle.contents.contents.Release(self.handle)
         return False
 
-    def retain(self, handle: object) -> None:
+    def retain(self, handle: type[IUnknownHandle]) -> None:
         """
         Retains a reference to the specified IOKit object.
 

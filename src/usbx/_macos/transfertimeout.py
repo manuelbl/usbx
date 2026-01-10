@@ -17,14 +17,14 @@ class TransferTimeout(object):
     If the timeout expires, the transfer is aborted.
     """
 
-    def __init__(self, timeout: int, intf_handle: IOUSBInterfaceHandle, pipe_index: int):
+    def __init__(self, timeout: int, intf_handle: type[IOUSBInterfaceHandle], pipe_index: int):
         """
         :param timeout: Timeout in milliseconds.
         :param intf_handle: Interface handle.
         :param pipe_index: Endpoint index.
         """
         self.lock: Lock = Lock()
-        self.intf_handle: IOUSBInterfaceHandle = intf_handle
+        self.intf_handle: type[IOUSBInterfaceHandle] = intf_handle
         intf_handle.contents.contents.AddRef(intf_handle)
         self.pipe_index: int = pipe_index
         self.timer: Optional[Timer] = Timer(timeout / 1000.0, self.abort)

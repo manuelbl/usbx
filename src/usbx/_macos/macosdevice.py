@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import time
-from ctypes import POINTER, byref, c_uint8, cast, c_uint16, c_uint32
+from ctypes import POINTER, byref, c_uint8, cast, c_uint16, c_uint32, c_int
 from typing import Union, Optional
 
 from .iokit import io_object_t, iokit, IOUSBFindInterfaceRequest, get_plugin_interface, \
@@ -55,15 +55,15 @@ def create_device_request(direction: TransferDirection, setup: ControlTransfer,
 
 
 class USBInterfaceInfo:
-    def __init__(self, iokit_intf: IOUSBInterfaceHandle, desc: Interface):
-        self.iokit_intf: IOUSBInterfaceHandle = iokit_intf
+    def __init__(self, iokit_intf: type[IOUSBInterfaceHandle], desc: Interface):
+        self.iokit_intf: type[IOUSBInterfaceHandle] = iokit_intf
         self.desc: Interface = desc
 
 
 class USBEndpointInfo:
-    def __init__(self, iokit_intf: IOUSBInterfaceHandle, pipe_index: int,
+    def __init__(self, iokit_intf: type[IOUSBInterfaceHandle], pipe_index: int,
                  transfer_type: TransferType, packet_size: int):
-        self.iokit_intf: IOUSBInterfaceHandle = iokit_intf
+        self.iokit_intf: type[IOUSBInterfaceHandle] = iokit_intf
         self.pipe_index: int = pipe_index
         self.transfer_type: TransferType = transfer_type
         self.packet_size: int = packet_size
@@ -71,11 +71,11 @@ class USBEndpointInfo:
 
 class MacosDevice(DeviceBase):
 
-    def __init__(self, device_intf: IOUSBInterfaceHandle, identifier: str):
+    def __init__(self, device_intf: type[IOUSBInterfaceHandle], identifier: str):
         super().__init__(identifier)
         self.discovery_time = time.time()
 
-        self.device_intf: IOUSBInterfaceHandle = device_intf
+        self.device_intf: type[IOUSBInterfaceHandle] = device_intf
 
         device_desc = self.load_device_desc()
         config_desc = self.load_configuration()
@@ -120,11 +120,11 @@ class MacosDevice(DeviceBase):
         with self._device_lock:
             self.check_is_closed_and_connected()
 
-            # several retries if device has just been connected/discovered
+            # several retries if the device has just been connected/discovered
             duration = time.time() - self.discovery_time
             num_tries = int(max((1 - duration) / 0.09, 1))
 
-            result = 0
+            result = c_int(0)
             while num_tries > 0:
                 num_tries -= 1
                 result = self.device_intf.contents.contents.USBDeviceOpenSeize(self.device_intf)
@@ -279,7 +279,7 @@ class MacosDevice(DeviceBase):
             result = iokit_intf.contents.contents.AbortPipe(iokit_intf, pipe_index)
             check_result(result, 'Aborting endpoint transfers failed')
 
-    def get_retained_handle(self, endpoint_number: int, direction: TransferDirection, guard: IOKitGuard) -> (IOUSBInterfaceHandle, int, Endpoint):
+    def get_retained_handle(self, endpoint_number: int, direction: TransferDirection, guard: IOKitGuard) -> tuple[type[IOUSBInterfaceHandle], int, Endpoint]:
         with self._device_lock:
             endpoint, interface = self.get_and_check_endpoint_and_interface(endpoint_number, direction)
             address = Endpoint.get_address(endpoint_number, direction)
@@ -288,10 +288,10 @@ class MacosDevice(DeviceBase):
             guard.retain(iokit_intf)
             return iokit_intf, pipe_index, endpoint
 
-    def find_intf_handle(self, interface: Interface) -> IOUSBInterfaceHandle:
+    def find_intf_handle(self, interface: Interface) -> type[IOUSBInterfaceHandle]:
         return next(intf.iokit_intf for intf in self.claimed_interfaces if intf.desc == interface)
 
-    def find_interface_info(self, desc: Interface) -> USBInterfaceInfo:
+    def find_interface_info(self, desc: Interface) -> USBInterfaceInfo | None:
         """
         Iterates the list of interfaces to get the handle for the IOKit Interface.
         :param desc: interface descriptor
@@ -306,7 +306,7 @@ class MacosDevice(DeviceBase):
 
         while True:
             service: io_object_t = iokit.IOIteratorNext(iterator)
-            intf: IOUSBInterfaceHandle = None
+            intf: type[IOUSBInterfaceHandle] | None = None
             if service == 0:
                 break
 
