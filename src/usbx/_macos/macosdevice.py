@@ -9,12 +9,12 @@ import time
 from ctypes import POINTER, byref, c_uint8, cast, c_uint16, c_uint32
 from typing import Union, Optional
 
-from .macoserrors import check_result
 from .iokit import io_object_t, iokit, IOUSBFindInterfaceRequest, get_plugin_interface, \
     kIOUSBInterfaceUserClientTypeID, kIOUSBInterfaceInterfaceID190, IOUSBInterfaceInterface190, IOUSBDevRequest, \
     USBConfigurationDescriptor, IOUSBInterfaceHandle, kIOUSBFindInterfaceDontCare, kIOReturnAborted, \
     guard_iokit_object, IOKitGuard, kIOReturnExclusiveAccess, kUSBReEnumerateCaptureDeviceMask, \
     kUSBReEnumerateReleaseDeviceMask
+from .macoserrors import check_result
 from .transfertimeout import TransferTimeout
 from .._common.confparser import device_descriptor_type
 from .._common.ctypesfunc import readable_buffer, writable_buffer

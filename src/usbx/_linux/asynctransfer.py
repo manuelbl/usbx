@@ -6,18 +6,18 @@ from __future__ import annotations
 
 import errno
 import os
-from select import epoll, EPOLLOUT
 from ctypes import c_void_p, addressof, byref, c_ulong, c_int, CDLL, get_errno
 from threading import Event, Lock, Thread
 from typing import Optional, Union
 
+from select import epoll, EPOLLOUT
+
 from .usbdevfs import Urb, USBDEVFS_REAPURBNDELAY, USBDEVFS_URB_TYPE_BULK, USBDEVFS_URB_TYPE_INTERRUPT, \
     USBDEVFS_URB_TYPE_ISO, USBDEVFS_URB_TYPE_CONTROL, USBDEVFS_SUBMITURB, USBDEVFS_DISCARDURB
 from .. import USBError
+from .._common.ctypesfunc import readable_buffer, writable_buffer
 from ..configuration import Endpoint
 from ..enums import TransferType, TransferDirection
-from .._common.ctypesfunc import readable_buffer, writable_buffer
-
 
 libc = CDLL('libc.so.6', use_errno = True)
 libc.ioctl.arg_types = [c_int, c_ulong, c_void_p]

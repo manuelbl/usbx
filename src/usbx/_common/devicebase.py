@@ -8,11 +8,11 @@ from typing import Optional
 
 from .._common.confparser import USBConfigurationParser
 from ..configuration import Interface, Endpoint
+from ..controltransfer import ControlTransfer
 from ..device import Device
 from ..enums import TransferDirection, Recipient, TransferType
 from ..exceptions import USBError
 from ..version import Version
-from ..controltransfer import ControlTransfer
 
 
 class DeviceBase(Device):

@@ -3,9 +3,10 @@
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
 
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
 from typing import Optional
+
 from usbx import ControlTransfer, Device, Recipient, RequestType
 
 

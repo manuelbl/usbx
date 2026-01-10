@@ -11,12 +11,12 @@ from typing import Callable, Optional
 
 from .corefoundation import corefoundation as cf
 from .iokit import get_property_as_int, get_property_as_string, iokit, io_object_t, get_plugin_interface, \
-                   mach_port_t, IOUSBDeviceHandle, kIOUSBDeviceClassName,  kIOFirstMatchNotification, \
-                   kIOTerminatedNotification
-from .iokit import kIOUSBDeviceUserClientTypeID, kIOUSBDeviceInterfaceID187,  kUSBVendorID, kUSBProductID, \
+    mach_port_t, IOUSBDeviceHandle, kIOUSBDeviceClassName, kIOFirstMatchNotification, \
+    kIOTerminatedNotification
+from .iokit import kIOUSBDeviceUserClientTypeID, kIOUSBDeviceInterfaceID187, kUSBVendorID, kUSBProductID, \
     kUSBVendorString, kUSBProductString, kUSBSerialNumberString, IOUSBDeviceInterface187
-from .macoserrors import check_result
 from .macosdevice import MacosDevice
+from .macoserrors import check_result
 from .._common.registrybase import DeviceRegistryBase
 from ..device import Device
 

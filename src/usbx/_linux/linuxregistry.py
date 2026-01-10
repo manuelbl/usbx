@@ -4,9 +4,10 @@
 # https://opensource.org/licenses/MIT
 
 import logging
-import select
 from ctypes import c_void_p
 from typing import Optional
+
+import select
 
 from .linuxdevice import LinuxDevice
 from .udev import udev

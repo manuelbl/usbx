@@ -3,8 +3,8 @@
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
 
-import platform
 import os
+import platform
 
 from .registry import DeviceRegistry
 

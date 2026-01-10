@@ -6,8 +6,8 @@
 from random import randbytes
 from unittest import SkipTest
 
-from usbx import TransferTimeoutError, TransferDirection
 from tests.base import TestBase
+from usbx import TransferTimeoutError, TransferDirection
 
 
 class TestTimeout(TestBase):

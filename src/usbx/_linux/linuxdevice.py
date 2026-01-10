@@ -15,12 +15,12 @@ from .usbdevfs import CtrlTransfer, USBDEVFS_CLAIMINTERFACE, USBDEVFS_RELEASEINT
     USBDEVFS_SETINTERFACE, SetInterface, USBDEVFS_CLEAR_HALT, DisconnectClaim, USBDEVFS_DISCONNECT_CLAIM_EXCEPT_DRIVER, \
     USBDEVFS_DISCONNECT_CLAIM, IoCtl, USBDEVFS_CONNECT, USBDEVFS_IOCTL
 from .. import TransferType
-from ..exceptions import USBError, StallError, TransferTimeoutError
-from ..enums import TransferDirection
-from ..controltransfer import ControlTransfer
-from ..configuration import Endpoint
 from .._common.ctypesfunc import writable_buffer, readable_buffer
 from .._common.devicebase import DeviceBase
+from ..configuration import Endpoint
+from ..controltransfer import ControlTransfer
+from ..enums import TransferDirection
+from ..exceptions import USBError, StallError, TransferTimeoutError
 
 
 def create_ctrl_transfer(transfer: ControlTransfer, direction: TransferDirection) -> CtrlTransfer:

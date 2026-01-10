@@ -16,12 +16,12 @@ from .kernel32 import kernel32, GENERIC_WRITE, GENERIC_READ, FILE_SHARE_WRITE, F
 from .setupapi import DEVPKEY_Device_Children, DEVPKEY_Device_HardwareIds
 from .winerror import raise_last_usb_error
 from .winusb import winusb, WINUSB_INTERFACE_HANDLE, WINUSB_SETUP_PACKET, PUCHAR, PIPE_TRANSFER_TIMEOUT
+from .._common.ctypesfunc import readable_buffer, writable_buffer
 from .._common.devicebase import DeviceBase
 from ..configuration import Interface, Endpoint
-from ..exceptions import USBError
 from ..controltransfer import ControlTransfer
 from ..enums import TransferDirection, Recipient
-from .._common.ctypesfunc import readable_buffer, writable_buffer
+from ..exceptions import USBError
 
 
 class InterfaceHandle:

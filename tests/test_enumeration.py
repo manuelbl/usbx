@@ -3,8 +3,8 @@
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
 
-from usbx import usb, Device
 from tests.base import TestBase
+from usbx import usb, Device
 
 
 def is_test_device(device: Device) -> bool:

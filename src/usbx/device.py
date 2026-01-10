@@ -5,10 +5,10 @@
 
 from typing import Optional
 
-from .enums import TransferDirection
-from .version import Version
 from .configuration import Interface, Endpoint, Configuration
 from .controltransfer import ControlTransfer
+from .enums import TransferDirection
+from .version import Version
 
 
 class Device:

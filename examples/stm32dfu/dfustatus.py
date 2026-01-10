@@ -3,8 +3,9 @@
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
 
-from dataclasses import dataclass
 import struct
+from dataclasses import dataclass
+
 from devicestate import DeviceState
 from devicestatus import DeviceStatus
 

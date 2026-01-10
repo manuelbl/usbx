@@ -3,14 +3,14 @@
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
 
-from .enums import TransferType, TransferDirection, Recipient, RequestType
-from .version import Version
 from .configuration import Configuration, Interface, AlternateInterface, Endpoint, CompositeFunction
 from .controltransfer import ControlTransfer
 from .device import Device
+from .enums import TransferType, TransferDirection, Recipient, RequestType
 from .exceptions import USBError, StallError, TransferTimeoutError
 from .registry import DeviceRegistry
 from .usb import usb
+from .version import Version
 
 __author__ = "Manuel Bl."
 __license__ = "MIT"

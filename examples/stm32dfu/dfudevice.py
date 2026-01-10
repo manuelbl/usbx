@@ -6,7 +6,6 @@
 import struct
 import time
 from typing import Optional
-from usbx import ControlTransfer, Device, Recipient, RequestType, Version, usb
 
 from devicestate import DeviceState
 from devicestatus import DeviceStatus
@@ -14,6 +13,8 @@ from dfuerror import DFUError
 from dfurequest import DFURequest
 from dfustatus import DFUStatus
 from segment import Page, Segment
+from usbx import ControlTransfer, Device, Recipient, RequestType, Version, usb
+
 
 class DFUDevice:
     """

@@ -4,9 +4,10 @@
 # https://opensource.org/licenses/MIT
 from __future__ import annotations
 
-from _ctypes import _CData
 from ctypes import Structure, sizeof
 from typing import Type
+
+from _ctypes import _CData
 
 _IOC_NRBITS = 8
 _IOC_TYPEBITS = 8

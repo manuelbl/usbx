@@ -4,6 +4,7 @@
 # https://opensource.org/licenses/MIT
 
 import sys
+
 from dfudevice import DFUDevice
 from dfuerror import DFUError
 
