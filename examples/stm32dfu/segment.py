@@ -86,7 +86,7 @@ class Segment:
         """
         for segment in segments:
             for sector in segment.sectors:
-                if address >= sector.start_address and address < sector.end_address:
+                if sector.start_address <= address < sector.end_address:
                     offset = address - sector.start_address
                     page_number = offset // sector.page_size
                     return Page(segment, sector.start_address + page_number * sector.page_size, 1, sector.page_size, sector.attributes)

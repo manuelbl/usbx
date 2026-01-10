@@ -35,7 +35,7 @@ class WNDCLASSEXW(Structure):
         self.cbSize = sizeof(self)
 
 
-class DEV_BROADCAST_DEVICEINTERFACE_W(Structure):
+class DEV_BROADCAST_DEVICEINTERFACE_W(Structure):  #NOSONAR (S101)
     _fields_ = [
         ('dbcc_size', DWORD),
         ('dbcc_devicetype', DWORD),

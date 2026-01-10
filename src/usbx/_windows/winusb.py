@@ -8,7 +8,7 @@ from ctypes import Structure, POINTER, c_void_p
 from ctypes.wintypes import ULONG, BYTE as UCHAR, USHORT, BOOLEAN, DWORD, HANDLE, BOOL, PULONG
 
 
-class USB_DEVICE_DESCRIPTOR(Structure):
+class USB_DEVICE_DESCRIPTOR(Structure): #NOSONAR (S101)
     _fields_ = [
         ('bLength', UCHAR),
         ('bDescriptorType', UCHAR),
@@ -27,7 +27,7 @@ class USB_DEVICE_DESCRIPTOR(Structure):
     ]
 
 
-class USB_NODE_CONNECTION_INFORMATION_EX(Structure):
+class USB_NODE_CONNECTION_INFORMATION_EX(Structure): #NOSONAR (S101)
     _fields_ = [
         ('ConnectionIndex', ULONG),
         ('DeviceDescriptor', USB_DEVICE_DESCRIPTOR),
@@ -51,14 +51,14 @@ class SetupPacket(Structure):
     _pack_ = 1
 
 
-class USB_DESCRIPTOR_REQUEST(Structure):
+class USB_DESCRIPTOR_REQUEST(Structure): #NOSONAR (S101)
     _fields_ = [
         ('ConnectionIndex', ULONG),
         ('setupPacket', SetupPacket),
         ('Data', (UCHAR * 256))
     ]
 
-class WINUSB_SETUP_PACKET(Structure):
+class WINUSB_SETUP_PACKET(Structure): #NOSONAR (S101)
     _fields_ = [
         ('RequestType', UCHAR),
         ('Request', UCHAR),

@@ -17,7 +17,7 @@ class HDEVINFO(HANDLE):
     pass
 
 
-class SP_DEVINFO_DATA(Structure):
+class SP_DEVINFO_DATA(Structure): #NOSONAR (S101)
     _fields_ = [
         ('cbSize', DWORD),
         ('ClassGuid', GUID),
@@ -33,7 +33,7 @@ class SP_DEVINFO_DATA(Structure):
 PSP_DEVINFO_DATA = POINTER(SP_DEVINFO_DATA)
 
 
-class SP_DEVICE_INTERFACE_DATA(Structure):
+class SP_DEVICE_INTERFACE_DATA(Structure): #NOSONAR (S101)
     _fields_ = [
         ('cbSize', DWORD),
         ('ClassGuid', GUID),
@@ -49,7 +49,7 @@ class SP_DEVICE_INTERFACE_DATA(Structure):
 PSP_DEVICE_INTERFACE_DATA = POINTER(SP_DEVICE_INTERFACE_DATA)
 
 
-class SP_DEVICE_INTERFACE_DETAIL_DATA_W(Structure):
+class SP_DEVICE_INTERFACE_DETAIL_DATA_W(Structure): #NOSONAR (S101)
     _fields_ = [
         ('cbSize', DWORD),
         ('DevicePath', WCHAR * 260),

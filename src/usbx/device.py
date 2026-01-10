@@ -119,7 +119,7 @@ class Device:
         Get :class:`Endpoint` instance with number ``number`` and direction ``direction``.
 
         This method considers the endpoints of all interfaces, whether claimed or not.
-        For each interface, the endpoints of the currently active alternate setting are considered..
+        For each interface, the endpoints of the currently active alternate setting are considered.
         Control endpoint 0 is excluded.
 
         :param number: Endpoint number (between 0 and 127).

@@ -4,7 +4,7 @@
 # https://opensource.org/licenses/MIT
 
 from random import randbytes
-from unittest import SkipTest, skipIf
+from unittest import SkipTest
 
 from usbx import TransferTimeoutError, TransferDirection
 from tests.base import TestBase

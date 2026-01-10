@@ -2,8 +2,10 @@
 # Copyright (c) 2024 Manuel Bleichenbacher
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
+from __future__ import annotations
 
-from ctypes import sizeof
+from _ctypes import _CData
+from ctypes import Structure, sizeof
 from typing import Type
 
 _IOC_NRBITS = 8
@@ -22,25 +24,25 @@ _IOC_READ = 2
 
 
 # noinspection PyPep8Naming
-def _IOC(dir_: int, type_: str, nr: int, size: int) -> int:  # NOSONAR
+def _IOC(dir_: int, type_: str, nr: int, size: int) -> int:  # NOSONAR (S1542)
     return (dir_ << _IOC_DIRSHIFT) | (ord(type_) << _IOC_TYPESHIFT) | (nr << _IOC_NRSHIFT) | (size << _IOC_SIZESHIFT)
 
 
 # noinspection PyPep8Naming
-def _IO(type_: str, nr: int) -> int:  # NOSONAR
+def _IO(type_: str, nr: int) -> int:  # NOSONAR (S1542)
     return _IOC(_IOC_NONE, type_, nr, 0)
 
 
 # noinspection PyPep8Naming
-def _IOR(type_: str, nr: int, size: Type) -> int:  # NOSONAR
+def _IOR(type_: str, nr: int, size: Type[_CData] | Type[Structure]) -> int:  # NOSONAR (S1542)
     return _IOC(_IOC_READ, type_, nr, sizeof(size))
 
 
 # noinspection PyPep8Naming
-def _IOW(type_: str, nr: int, size: Type) -> int:  # NOSONAR
+def _IOW(type_: str, nr: int, size: Type[_CData] | Type[Structure]) -> int:  # NOSONAR (S1542)
     return _IOC(_IOC_WRITE, type_, nr, sizeof(size))
 
 
 # noinspection PyPep8Naming
-def _IOWR(type_: str, nr: int, size: Type) -> int:  # NOSONAR
+def _IOWR(type_: str, nr: int, size: Type[_CData] | Type[Structure]) -> int:  # NOSONAR (S1542)
     return _IOC(_IOC_READ | _IOC_WRITE, type_, nr, sizeof(size))

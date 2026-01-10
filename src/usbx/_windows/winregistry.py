@@ -72,7 +72,7 @@ class WindowsDeviceRegistry(DeviceRegistryBase):
     def handle_windows_message(self, hwnd: HWND, umsg: UINT, wparam: WPARAM, lparam: LPARAM) -> int:
         # check for message related to connecting / disconnecting devices
         if umsg == WM_DEVICECHANGE and (wparam == DBT_DEVICEARRIVAL or wparam == DBT_DEVICEREMOVECOMPLETE):
-            device_path = wstring_at(cast(lparam + DEV_BROADCAST_DEVICEINTERFACE_W.dbcc_name.offset, LPCWSTR))
+            device_path = wstring_at(cast(lparam.value + DEV_BROADCAST_DEVICEINTERFACE_W.dbcc_name.offset, LPCWSTR))
             if wparam == DBT_DEVICEARRIVAL:
                 self.on_device_connected(device_path)
             else:
@@ -172,17 +172,17 @@ class WindowsDeviceRegistry(DeviceRegistryBase):
 
         return device
 
-    def get_languages(self, hub_handle: HANDLE, usb_port_num: int) -> [int]:
+    def get_languages(self, hub_handle: HANDLE, usb_port_num: int) -> list[int]:
         try:
             langs = self.get_descriptor(hub_handle, usb_port_num, 3, 0, 0)
             num_langs = (len(langs) - 2) // 2
             if num_langs < 0:
                 return [0x0409]
-            return struct.unpack(f'<{num_langs}H', langs[2:])
+            return list(struct.unpack(f'<{num_langs}H', langs[2:]))
         except WindowsError:
             return [0x0409]
 
-    def get_string_descriptor(self, hub_handle: HANDLE, usb_port_num: int, index: int, languages: [int]) -> Optional[str]:
+    def get_string_descriptor(self, hub_handle: HANDLE, usb_port_num: int, index: int, languages: list[int]) -> Optional[str]:
         if index == 0:
             return None
 

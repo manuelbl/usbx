@@ -3,9 +3,12 @@
 # Licensed under MIT License
 # https://opensource.org/licenses/MIT
 
-from ctypes import c_void_p, byref, wintypes, cast, wstring_at, get_last_error, sizeof, create_string_buffer, c_char_p
+from ctypes import c_void_p, byref, wintypes, cast, wstring_at, get_last_error, sizeof, create_string_buffer, \
+    c_char
 from typing import Callable, Optional, Union
 from winreg import KEY_READ, QueryValueEx, CloseKey
+
+from _ctypes import Array
 
 from .kernel32 import ERROR_NO_MORE_ITEMS, ERROR_NOT_FOUND, ERROR_INSUFFICIENT_BUFFER
 from .ole32 import ole32, GUID, PGUID, CLSID
@@ -66,7 +69,7 @@ class DeviceInfoSet:
             self.dev_info_set = None
 
     @classmethod
-    def of_present_devices(cls, interface_guid: PGUID, instance_id: Optional[str]) -> 'DeviceInfoSet':
+    def of_present_devices(cls, interface_guid: type[PGUID], instance_id: Optional[str]) -> 'DeviceInfoSet':
         def create_dev_info_set() -> Optional[HDEVINFO]:
             info_set = setupapi.SetupDiGetClassDevsW(byref(interface_guid), instance_id, None,
                                                      DIGCF_PRESENT | DIGCF_DEVICEINTERFACE)
@@ -103,7 +106,7 @@ class DeviceInfoSet:
         return DeviceInfoSet(empty_set)
 
     @classmethod
-    def get_device_path(cls, instance_id: str, interface_guid: GUID) -> str:
+    def get_device_path(cls, instance_id: str, interface_guid: GUID) -> Optional[str]:
         """
         Gets the device path for the device with the given device instance ID and device interface class.
 
@@ -235,7 +238,7 @@ class DeviceInfoSet:
             raise USBError('internal error (unexpected property type - 3)')
         return property_value.value
 
-    def get_variable_length_property(self, property_key: DEVPROPKEY, property_type: int) -> Optional[c_char_p]:
+    def get_variable_length_property(self, property_key: DEVPROPKEY, property_type: int) -> Optional[Array[c_char]]:
         actual_property_type = wintypes.DWORD()
         required_size = wintypes.DWORD()
         if setupapi.SetupDiGetDevicePropertyW(self.dev_info_set, self.dev_info_data, byref(property_key),

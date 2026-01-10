@@ -5,10 +5,12 @@
 
 from ctypes import POINTER, cast, c_uint8, c_void_p
 
-from typing import Any
+from typing import TypeVar
+
+T = TypeVar('T', bound=POINTER)
 
 
-def readable_buffer(data: bytes, target_type: Any = c_void_p) -> POINTER:
+def readable_buffer(data: bytes, target_type: type[T] = c_void_p) -> T:
     """
     Creates a *ctypes* instance for the given data.
 
@@ -21,9 +23,9 @@ def readable_buffer(data: bytes, target_type: Any = c_void_p) -> POINTER:
     return cast((c_uint8 * len(data)).from_buffer_copy(data), target_type)
 
 
-def writable_buffer(data: bytearray, target_type: Any = c_void_p) -> POINTER:
+def writable_buffer(data: bytearray, target_type: type[T] = c_void_p) -> T:
     """
-    Creates a writable *ctypes* instance sharing the buffer with the given data..
+    Creates a writable *ctypes* instance sharing the buffer with the given data.
 
     The returned instance is of the specified *ctypes* type.
 
