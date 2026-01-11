@@ -16,7 +16,7 @@ import usbx
 project = 'usbx'
 copyright = '2025 Manuel Bleichenbacher'
 author = 'Manuel Bl'
-release = '0.8.2'
+release = '0.8.3'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
