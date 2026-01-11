@@ -4,10 +4,8 @@
 # https://opensource.org/licenses/MIT
 from __future__ import annotations
 
-from ctypes import Structure, sizeof
-from typing import Type
-
-from _ctypes import _CData
+from ctypes import sizeof
+from typing import Any
 
 _IOC_NRBITS = 8
 _IOC_TYPEBITS = 8
@@ -35,15 +33,15 @@ def _IO(type_: str, nr: int) -> int:  # NOSONAR (S1542)
 
 
 # noinspection PyPep8Naming
-def _IOR(type_: str, nr: int, size: Type[_CData] | Type[Structure]) -> int:  # NOSONAR (S1542)
+def _IOR(type_: str, nr: int, size: Any) -> int:  # NOSONAR (S1542)
     return _IOC(_IOC_READ, type_, nr, sizeof(size))
 
 
 # noinspection PyPep8Naming
-def _IOW(type_: str, nr: int, size: Type[_CData] | Type[Structure]) -> int:  # NOSONAR (S1542)
+def _IOW(type_: str, nr: int, size: Any) -> int:  # NOSONAR (S1542)
     return _IOC(_IOC_WRITE, type_, nr, sizeof(size))
 
 
 # noinspection PyPep8Naming
-def _IOWR(type_: str, nr: int, size: Type[_CData] | Type[Structure]) -> int:  # NOSONAR (S1542)
+def _IOWR(type_: str, nr: int, size: Any) -> int:  # NOSONAR (S1542)
     return _IOC(_IOC_READ | _IOC_WRITE, type_, nr, sizeof(size))
