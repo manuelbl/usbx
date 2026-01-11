@@ -14,7 +14,7 @@ from .version import Version
 
 __author__ = "Manuel Bl."
 __license__ = "MIT"
-__version__ = "0.8.1"
+__version__ = "0.8.2"
 
 
 __all__ = ('usb', 'AlternateInterface', 'CompositeFunction', 'Configuration', 'ControlTransfer',
