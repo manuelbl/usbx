@@ -5,10 +5,10 @@ macOS
 -----
 
 No special considerations apply. Using this library, a Python application can connect to any USB device
-and claim any interface that isn't claimed by an operating system driver or another application.
-Standard operation system drivers can be unloaded if the application is run with root privileges.
+and claim any interface that hasn't already been claimed by an operating system driver or another application.
+Standard operating system drivers can be unloaded if the application is run with root privileges.
 
-This library runs both on Macs with Apple Silicon and Intel processors.
+This library runs both on Macs with Apple Silicon and Intel processors (64-bit).
 
 
 Linux
@@ -21,8 +21,8 @@ This is fulfilled by the majority of Linux distributions suitable for desktop co
 It runs on both x86-64 (Intel, AMD) and ARM64 processors.
 
 Using this library, a Python application can connect to any USB device and claim any
-interfaces that isn't claimed by an operating system driver or another application.
-Standard operation system drivers can be unloaded (without the need for root privileges).
+interfaces that hasn't already been claimed by an operating system driver or another application.
+Standard operating system drivers can be unloaded (without the need for root privileges).
 
 Most Linux distributions set up user accounts without permissions to access USB devices.
 The `udev` system daemon is responsible for assigning permissions to USB devices
@@ -55,7 +55,6 @@ Enumerating and querying USB devices is possible independent of the driver.
 USB devices can implement special control requests to instruct Windows to automatically
 install the `WinUSB` driver (search the internet for `WCID` or `Microsoft OS Compatibility Descriptors`).
 The `WinUSB` driver can also be manually installed or replaced using a software called `Zadig`.
-
 The test devices implement the required control requests. So the driver is installed automatically.
 
 This library runs on both Windows for x86-64 (Intel, AMD) and Windows for ARM (ARM64).
